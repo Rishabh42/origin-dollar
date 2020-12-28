@@ -15,7 +15,6 @@ import { login } from 'utils/account'
 import { decorateContractStakeInfoWithTxHashes } from 'utils/stake'
 import { mergeDeep } from 'utils/utils'
 import { displayCurrency } from 'utils/math'
-import withRpcProvider from 'hoc/withRpcProvider'
 
 const AccountListener = (props) => {
   const web3react = useWeb3React()
@@ -98,7 +97,7 @@ const AccountListener = (props) => {
 
   const subscribeToEvents = (contracts) => {
     // Polls data first time, then rely on events
-    const { usdtRpc, daiRpc, usdcRpc, ousdRpc, vault, ognRpc } = contracts
+    const { usdtWs, daiWs, usdcWs, ousdWs, vault, ognWs } = contracts
 
     const updateOnAllowanceEvent = (contract, name) =>
       contract.provider.on(
@@ -139,17 +138,17 @@ const AccountListener = (props) => {
     }
 
     // balance
-    updateOnTransferEvent(ousdRpc, 'ousd')
-    updateOnTransferEvent(daiRpc, 'dai')
-    updateOnTransferEvent(usdtRpc, 'usdt')
-    updateOnTransferEvent(usdcRpc, 'usdc')
-    updateOnTransferEvent(ognRpc, 'ogn')
+    updateOnTransferEvent(ousdWs, 'ousd')
+    updateOnTransferEvent(daiWs, 'dai')
+    updateOnTransferEvent(usdtWs, 'usdt')
+    updateOnTransferEvent(usdcWs, 'usdc')
+    updateOnTransferEvent(ognWs, 'ogn')
 
     // allowance
-    updateOnAllowanceEvent(ousdRpc, 'ousd')
-    updateOnAllowanceEvent(daiRpc, 'dai')
-    updateOnAllowanceEvent(usdtRpc, 'usdt')
-    updateOnAllowanceEvent(usdcRpc, 'usdc')
+    updateOnAllowanceEvent(ousdWs, 'ousd')
+    updateOnAllowanceEvent(daiWs, 'dai')
+    updateOnAllowanceEvent(usdtWs, 'usdt')
+    updateOnAllowanceEvent(usdcWs, 'usdc')
   }
 
   const loadData = async (contracts, { onlyStaking } = {}) => {
@@ -459,12 +458,12 @@ const AccountListener = (props) => {
     return () => {
       // Stop event listening
       if (contracts) {
-        const { usdtRpc, daiRpc, usdcRpc, ousdRpc, ognRpc } = contracts
-        usdtRpc.provider.removeAllListeners()
-        daiRpc.provider.removeAllListeners()
-        usdcRpc.provider.removeAllListeners()
-        ousdRpc.provider.removeAllListeners()
-        ognRpc.provider.removeAllListeners()
+        const { usdtWs, daiWs, usdcWs, ousdWs, ognWs } = contracts
+        usdtWs.provider.removeAllListeners()
+        daiWs.provider.removeAllListeners()
+        usdcWs.provider.removeAllListeners()
+        ousdWs.provider.removeAllListeners()
+        ognWs.provider.removeAllListeners()
       }
 
       if (balancesInterval) {
@@ -476,4 +475,4 @@ const AccountListener = (props) => {
   return ''
 }
 
-export default withRpcProvider(AccountListener)
+export default AccountListener

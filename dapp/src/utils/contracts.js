@@ -24,6 +24,10 @@ export async function setupContracts(account, library, chainId) {
     process.env.ETHEREUM_RPC_PROVIDER,
     { chainId: parseInt(process.env.ETHEREUM_RPC_CHAIN_ID) }
   )
+  const wsProvider = new ethers.providers.WebSocketProvider(
+    process.env.ETHEREUM_WEBSOCKET_PROVIDER,
+    { chainId: parseInt(process.env.ETHEREUM_RPC_CHAIN_ID) }
+  )
 
   let provider = jsonRpcProvider
 
@@ -80,15 +84,15 @@ export async function setupContracts(account, library, chainId) {
   }
 
   let usdt,
-    usdtRpc,
+    usdtWs,
     dai,
-    daiRpc,
+    daiWs,
     usdc,
-    usdcRpc,
+    usdcWs,
     ousd,
-    ousdRpc,
+    ousdWs,
     ogn,
-    ognRpc,
+    ognWs,
     vault,
     uniV2OusdUsdt,
     uniV2OusdUsdt_iErc20,
@@ -146,20 +150,20 @@ export async function setupContracts(account, library, chainId) {
   )
 
   ousd = getContract(ousdProxy.address, network.contracts['OUSD'].abi)
-  ousdRpc = getContract(
+  ousdWs = getContract(
     ousdProxy.address,
     network.contracts['OUSD'].abi,
-    jsonRpcProvider
+    wsProvider
   )
   if (chainId == 31337) {
     usdt = contracts['MockUSDT']
     usdc = contracts['MockUSDC']
     dai = contracts['MockDAI']
     ogn = contracts['MockOGN']
-    usdtRpc = getContract(usdt.address, usdtAbi.abi, jsonRpcProvider)
-    usdcRpc = getContract(usdc.address, usdcAbi.abi, jsonRpcProvider)
-    daiRpc = getContract(dai.address, daiAbi.abi, jsonRpcProvider)
-    ognRpc = getContract(ogn.address, ognAbi, jsonRpcProvider)
+    usdtWs = getContract(usdt.address, usdtAbi.abi, wsProvider)
+    usdcWs = getContract(usdc.address, usdcAbi.abi, wsProvider)
+    daiWs = getContract(dai.address, daiAbi.abi, wsProvider)
+    ognWs = getContract(ogn.address, ognAbi, wsProvider)
     uniV2OusdUsdt = contracts['MockUniswapPairOUSD_USDT']
     uniV2OusdUsdc = contracts['MockUniswapPairOUSD_USDC']
     uniV2OusdDai = contracts['MockUniswapPairOUSD_DAI']
@@ -168,10 +172,10 @@ export async function setupContracts(account, library, chainId) {
     usdc = getContract(addresses.mainnet.USDC, usdcAbi.abi)
     dai = getContract(addresses.mainnet.DAI, daiAbi.abi)
     ogn = getContract(addresses.mainnet.OGN, ognAbi)
-    usdtRpc = getContract(addresses.mainnet.USDT, usdtAbi.abi, jsonRpcProvider)
-    usdcRpc = getContract(addresses.mainnet.USDC, usdcAbi.abi, jsonRpcProvider)
-    daiRpc = getContract(addresses.mainnet.DAI, daiAbi.abi, jsonRpcProvider)
-    ognRpc = getContract(addresses.mainnet.OGN, ognAbi, jsonRpcProvider)
+    usdtWs = getContract(addresses.mainnet.USDT, usdtAbi.abi, wsProvider)
+    usdcWs = getContract(addresses.mainnet.USDC, usdcAbi.abi, wsProvider)
+    daiWs = getContract(addresses.mainnet.DAI, daiAbi.abi, wsProvider)
+    ognWs = getContract(addresses.mainnet.OGN, ognAbi, wsProvider)
 
     if (process.env.ENABLE_LIQUIDITY_MINING === 'true') {
       uniV2OusdUsdt = null
@@ -329,15 +333,15 @@ export async function setupContracts(account, library, chainId) {
 
   const contractsToExport = {
     usdt,
-    usdtRpc,
+    usdtWs,
     dai,
-    daiRpc,
+    daiWs,
     usdc,
-    usdcRpc,
+    usdcWs,
     ousd,
-    ousdRpc,
+    ousdWs,
     ogn,
-    ognRpc,
+    ognWs,
     vault,
     uniV2OusdUsdt,
     uniV2OusdUsdt_iErc20,
